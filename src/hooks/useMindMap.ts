@@ -12,6 +12,15 @@ import {
 
 export type LayoutStyle = 'vertical' | 'horizontal';
 
+interface MindMapData {
+  nodes: Node[];
+  edges: Edge[];
+  layoutStyle: LayoutStyle;
+  selectedNodeColor: string;
+  timestamp: number;
+  name: string;
+}
+
 const initialNodes: Node[] = [
   {
     id: '1',
@@ -191,6 +200,118 @@ export function useMindMap() {
     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
   }, [setNodes, setEdges]);
 
+  // 保存機能
+  const saveMindMap = useCallback((name?: string) => {
+    try {
+      console.log('保存機能開始');
+      console.log('ノード数:', nodes.length);
+      console.log('エッジ数:', edges.length);
+      
+      const mindMapData: MindMapData = {
+        nodes,
+        edges,
+        layoutStyle,
+        selectedNodeColor,
+        timestamp: Date.now(),
+        name: name || `マインドマップ_${new Date().toLocaleString('ja-JP')}`,
+      };
+
+      console.log('保存データ作成完了:', mindMapData.name);
+
+      const dataStr = JSON.stringify(mindMapData, null, 2);
+      console.log('JSON文字列化完了, サイズ:', dataStr.length);
+      
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      console.log('Blob作成完了, サイズ:', dataBlob.size);
+      
+      // 方法1: 通常のダウンロード
+      try {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `${mindMapData.name}.json`;
+        
+        console.log('ダウンロードリンク作成:', link.href);
+        console.log('ファイル名:', link.download);
+        
+        // リンクをクリックしてダウンロードを開始
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(link.href);
+        
+        console.log('保存完了');
+        alert(`マインドマップ「${mindMapData.name}」を保存しました。`);
+      } catch (downloadError) {
+        console.error('ダウンロードエラー:', downloadError);
+        
+        // 方法2: 代替手段 - クリップボードにコピー
+        console.log('代替手段: クリップボードにコピー');
+        navigator.clipboard.writeText(dataStr).then(() => {
+          alert(`マインドマップ「${mindMapData.name}」のデータをクリップボードにコピーしました。\n手動でファイルに保存してください。`);
+        }).catch((clipboardError) => {
+          console.error('クリップボードエラー:', clipboardError);
+          
+          // 方法3: 最終手段 - コンソールに出力
+          console.log('最終手段: コンソールに出力');
+          console.log('=== マインドマップデータ ===');
+          console.log(dataStr);
+          alert(`マインドマップ「${mindMapData.name}」のデータをコンソールに出力しました。\n開発者ツールのコンソールを確認してください。`);
+        });
+      }
+    } catch (error) {
+      console.error('保存エラー:', error);
+      alert('保存に失敗しました: ' + error);
+    }
+  }, [nodes, edges, layoutStyle, selectedNodeColor]);
+
+  // 読み込み機能
+  const loadMindMap = useCallback((file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const mindMapData: MindMapData = JSON.parse(content);
+        
+        // データの検証
+        if (!mindMapData.nodes || !mindMapData.edges) {
+          alert('無効なファイル形式です。');
+          return;
+        }
+
+        // 状態を復元
+        setNodes(mindMapData.nodes);
+        setEdges(mindMapData.edges);
+        if (mindMapData.layoutStyle) {
+          setLayoutStyle(mindMapData.layoutStyle);
+        }
+        if (mindMapData.selectedNodeColor) {
+          setSelectedNodeColor(mindMapData.selectedNodeColor);
+        }
+
+        alert(`マインドマップ「${mindMapData.name}」を読み込みました。`);
+      } catch (error) {
+        alert('ファイルの読み込みに失敗しました。');
+        console.error('Load error:', error);
+      }
+    };
+    reader.readAsText(file);
+  }, [setNodes, setEdges, setLayoutStyle, setSelectedNodeColor]);
+
+  // ファイル選択ダイアログを開く
+  const openFileDialog = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        loadMindMap(file);
+      }
+    };
+    input.click();
+  }, [loadMindMap]);
+
   // 選択状態が変更されたときに色を自動適用
   useEffect(() => {
     setNodes((nds) =>
@@ -221,6 +342,9 @@ export function useMindMap() {
     changeSelectedNodeColor,
     changeSelectedEdgeStyle,
     deleteNode,
+    saveMindMap,
+    loadMindMap,
+    openFileDialog,
     setLayoutStyle,
     setSelectedNodeColor,
     setSelectedNodes,

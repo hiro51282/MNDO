@@ -11,6 +11,8 @@ interface ControlPanelProps {
   onNodeColorChange: (color: string) => void;
   onChangeNodeColor: () => void;
   onEdgeStyleChange: (style: string) => void;
+  onSaveMindMap: () => void;
+  onLoadMindMap: () => void;
 }
 
 export function ControlPanel({
@@ -24,6 +26,8 @@ export function ControlPanel({
   onNodeColorChange,
   onChangeNodeColor,
   onEdgeStyleChange,
+  onSaveMindMap,
+  onLoadMindMap,
 }: ControlPanelProps) {
   return (
     <div style={{ 
@@ -58,6 +62,82 @@ export function ControlPanel({
         }}>
           🎯 コントロール
         </h3>
+      </div>
+
+      {/* 保存/読み込みボタン */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '8px', 
+          marginBottom: '12px' 
+        }}>
+          <button
+            onClick={() => {
+              console.log('保存ボタンクリック');
+              console.log('onSaveMindMap関数:', onSaveMindMap);
+              onSaveMindMap();
+            }}
+            style={{
+              flex: 1,
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              fontWeight: '600',
+              boxShadow: '0 3px 8px rgba(16, 185, 129, 0.3)',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 3px 8px rgba(16, 185, 129, 0.3)';
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>💾</span>
+            保存
+          </button>
+          <button
+            onClick={onLoadMindMap}
+            style={{
+              flex: 1,
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              fontWeight: '600',
+              boxShadow: '0 3px 8px rgba(139, 92, 246, 0.3)',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 3px 8px rgba(139, 92, 246, 0.3)';
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>📂</span>
+            読み込み
+          </button>
+        </div>
       </div>
 
       {/* メインアクションボタン */}

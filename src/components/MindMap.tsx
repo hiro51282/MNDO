@@ -36,6 +36,8 @@ export function MindMap() {
     addSubNodes,
     changeSelectedNodeColor,
     changeSelectedEdgeStyle,
+    saveMindMap,
+    openFileDialog,
     setLayoutStyle,
     setSelectedNodeColor,
   } = useMindMap();
@@ -65,6 +67,8 @@ export function MindMap() {
         onNodeColorChange={setSelectedNodeColor}
         onChangeNodeColor={changeSelectedNodeColor}
         onEdgeStyleChange={changeSelectedEdgeStyle}
+        onSaveMindMap={saveMindMap}
+        onLoadMindMap={openFileDialog}
       />
 
       <InfoPanel
