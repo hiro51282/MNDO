@@ -1,277 +1,215 @@
 # AI連携マインドマップエディタ
 
-このプロジェクトは、React、TypeScript、TailwindCSS、ReactFlowを使用したマインドマップエディタです。
+React + ReactFlow + TypeScriptで構築された、AI機能を備えたマインドマップエディタです。
 
-## 環境構築手順
+## 🚀 機能一覧
 
-1. **Node.jsとnpmのインストール**  
-   最新のNode.jsとnpmをインストールしてください。
+### 基本操作
+- **ノード追加**: ランダムな位置に新しいノードを追加
+- **ノード編集**: ダブルクリックでノードのテキストを編集
+- **ノード削除**: 右クリックメニューからノードを削除
+- **複数選択**: Ctrl+クリックで複数のノードを選択
+- **エッジ接続**: ノード間を手動でエッジ接続
 
-2. **プロジェクトのセットアップ**  
-   ```bash
-   npm install
-   ```
+### 子ノード生成
+- **TABキー**: 選択したノードに子ノードを生成（下/右方向）
+- **Shift+TAB**: 選択したノードに子ノードを生成（上/左方向）
+- **ボタン操作**: 「サブノード追加」ボタンで子ノード生成
+- **AI対話**: 自然言語で指定したノードに子ノードを生成
 
-3. **依存関係のインストール**  
-   以下のパッケージをインストールします：
-   ```bash
-   npm install -D tailwindcss@3 postcss@latest autoprefixer@latest
-   ```
+### レイアウト設定
+- **生成スタイル**: 縦方向/横方向の切り替え
+- **縦方向**: 子ノードが親ノードの下に配置
+- **横方向**: 子ノードが親ノードの右に配置
+- **エッジ接続**: レイアウトに応じた適切なエッジ接続
 
-4. **TailwindCSSの初期化**  
-   ```bash
-   npx tailwindcss init -p
-   ```
+### ノードスタイル
+- **色変更**: 選択したノードの色を一括変更
+- **選択ハイライト**: 選択中のノードは薄い青でハイライト
+- **右クリックメニュー**:
+  - 背景色の変更
+  - 枠線色の変更
+  - 枠線スタイル（実線/破線/点線）
+  - フォントサイズ（小/中/大/特大）
 
-5. **設定ファイルの確認**  
-   - `tailwind.config.js` は以下の内容で、CommonJS形式に設定されています：
-     ```js
-     module.exports = {
-       content: [
-         "./index.html",
-         "./src/**/*.{js,ts,jsx,tsx}",
-       ],
-       theme: {
-         extend: {},
-       },
-       plugins: [],
-     }
-     ```
-   - `postcss.config.cjs` は以下の内容で、CommonJS形式に設定されています：
-     ```js
-     module.exports = {
-       plugins: {
-         tailwindcss: {},
-         autoprefixer: {},
-       },
-     }
-     ```
+### エッジスタイル
+- **個別選択**: エッジをクリックして個別に選択
+- **複数選択**: Ctrl+クリックで複数のエッジを選択
+- **スタイル変更**:
+  - 通常線
+  - 破線
+  - 点線
 
-6. **開発サーバーの起動**  
-   ```bash
-   npm run dev -- --host 0.0.0.0
-   ```
-   これにより、ローカル（http://localhost:5173/）およびネットワーク（http://192.168.11.15:5173/）でアクセス可能になります。
+### AI機能
+- **自然言語入力**: 「＜ノード名＞に子ノードを生成してください」
+- **自動検索**: 指定されたノードを自動検索
+- **自動生成**: 現在の生成スタイルに応じて子ノードを生成
 
-## 動作確認
+## 🎨 UI構成
 
-- ブラウザで `http://localhost:5173/` を開くと、マインドマップが表示されます。
-- マインドマップは、ReactFlowを使用して描画され、ノードとエッジが表示されます。
+### 左上コントロールパネル
+```
+┌─────────────────────────────────────┐
+│ [ノード追加] [サブノード追加 (選択数)] │
+│ 生成スタイル: [縦方向 ▼]            │
+│ ノード色: [■] [色変更 (選択数)]      │
+│ エッジスタイル: [通常線][破線][点線]  │
+└─────────────────────────────────────┘
+```
 
-## ソースコード
+### 右上情報パネル
+```
+┌─────────────────────────┐
+│ 選択されたノード: X個    │
+│ 選択されたエッジ: X個    │
+│ TABキー: サブノード作成  │
+│ Shift+TAB: 逆方向作成    │
+│ Ctrl+クリック: 複数選択  │
+│ 生成スタイル: 縦/横方向  │
+└─────────────────────────┘
+```
 
-- `src/App.tsx` は以下の内容で、MindMapコンポーネントを描画しています：
-  ```tsx
-  import { MindMap } from './components/MindMap'
+### 左下AIアシスタント
+```
+┌─────────────────────────────────────┐
+│ AI アシスタント                     │
+│ 例: 「メインアイデア」に子ノードを生成 │
+│ [＜ノード名＞に子ノードを生成してください] [実行] │
+└─────────────────────────────────────┘
+```
 
-  function App() {
-    return (
-      <div className="w-screen h-screen">
-        <MindMap />
-      </div>
-    )
-  }
+### 右下コントロール
+- **ReactFlow Controls**: ズームイン/アウト、フィットビュー
+- **MiniMap**: 全体マップ表示
 
-  export default App
-  ```
+## ⌨️ キーボードショートカット
 
-- `src/components/MindMap.tsx` は以下の内容で、ReactFlowを使用してマインドマップを描画しています：
-  ```tsx
-  import { useCallback } from 'react';
-  import ReactFlow, {
-    MiniMap,
-    Controls,
-    Background,
-    useNodesState,
-    useEdgesState,
-    addEdge,
-    Connection,
-    Edge,
-  } from 'reactflow';
-  import 'reactflow/dist/style.css';
+| キー | 機能 |
+|------|------|
+| `TAB` | 選択ノードに子ノード生成（下/右方向） |
+| `Shift + TAB` | 選択ノードに子ノード生成（上/左方向） |
+| `Ctrl + クリック` | 複数選択 |
+| `Enter` | AIアシスタント実行 |
+| `Enter` | ノード編集確定 |
+| `Escape` | ノード編集キャンセル |
 
-  const initialNodes = [
-    {
-      id: '1',
-      type: 'input',
-      data: { label: 'メインアイデア' },
-      position: { x: 250, y: 25 },
-    },
-    {
-      id: '2',
-      data: { label: 'サブアイデア1' },
-      position: { x: 100, y: 125 },
-    },
-    {
-      id: '3',
-      data: { label: 'サブアイデア2' },
-      position: { x: 400, y: 125 },
-    },
-  ];
+## 🎯 使用方法
 
-  const initialEdges = [
-    { id: 'e1-2', source: '1', target: '2' },
-    { id: 'e1-3', source: '1', target: '3' },
-  ];
+### 基本的なマインドマップ作成
+1. 「ノード追加」ボタンでメインノードを作成
+2. ノードをダブルクリックしてテキストを編集
+3. ノードを選択してTABキーで子ノードを生成
+4. 右クリックメニューでスタイルをカスタマイズ
 
-  export function MindMap() {
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+### 複数ノードの操作
+1. Ctrl+クリックで複数のノードを選択
+2. カラーピッカーで色を選択
+3. 「色変更」ボタンで一括色変更
+4. TABキーで複数の子ノードを同時生成
 
-    const onConnect = useCallback(
-      (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-      [setEdges],
-    );
+### AI機能の活用
+1. 左下のAIアシスタントに「＜ノード名＞に子ノードを生成してください」と入力
+2. Enterキーまたは「実行」ボタンをクリック
+3. 指定されたノードに自動的に子ノードが生成される
 
-    return (
-      <div style={{ width: '100vw', height: '100vh' }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          fitView
-        >
-          <Controls />
-          <MiniMap />
-          <Background variant="dots" gap={12} size={1} />
-        </ReactFlow>
-      </div>
-    );
-  }
-  ```
+### レイアウトの切り替え
+1. 左上の「生成スタイル」ドロップダウンで縦/横方向を選択
+2. 以降の子ノード生成は選択したスタイルで実行される
 
-- `src/index.css` は以下の内容で、TailwindCSSの設定が含まれています：
-  ```css
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+---
 
-  :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+## 🛠️ 技術仕様
 
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+### アーキテクチャ
+- **設計パターン**: カスタムフック + コンポーネント分割
+- **状態管理**: React Hooks (useState, useCallback, useEffect)
+- **関心の分離**: ロジックとUIの明確な分離
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+### カスタムフック
+- **`useMindMap`**: マインドマップの主要ロジック
+  - ノード・エッジの状態管理
+  - 子ノード生成ロジック
+  - スタイル変更機能
+  - 選択状態管理
+- **`useAiAssistant`**: AI機能のロジック
+  - 自然言語解析
+  - ノード検索
+  - 自動生成処理
+- **`useKeyboardShortcuts`**: キーボードイベント管理
+  - TAB/Shift+TABの処理
+  - イベントリスナーの管理
 
-  a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-  }
-  a:hover {
-    color: #535bf2;
-  }
+### コンポーネント構成
+- **`MindMapRefactored`**: メインコンポーネント（シンプル化）
+  - 各フックの統合
+  - レイアウト管理
+- **`ControlPanel`**: 左上コントロールパネル
+  - ノード追加・子ノード生成
+  - レイアウト設定
+  - スタイル変更
+- **`InfoPanel`**: 右上情報パネル
+  - 選択状態表示
+  - 操作ガイド
+- **`AiAssistant`**: 左下AIアシスタント
+  - 自然言語入力
+  - 実行ボタン
+- **`CustomNode`**: カスタムノード
+  - 編集機能
+  - 右クリックメニュー
+  - スタイル適用
 
-  body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-  }
+### ファイル構造
+```
+src/
+├── hooks/                    # カスタムフック
+│   ├── useMindMap.ts        # マインドマップロジック
+│   ├── useAiAssistant.ts    # AI機能ロジック
+│   └── useKeyboardShortcuts.ts # キーボードショートカット
+├── components/              # UIコンポーネント
+│   ├── MindMapRefactored.tsx # メインコンポーネント
+│   ├── ControlPanel.tsx     # コントロールパネル
+│   ├── InfoPanel.tsx        # 情報パネル
+│   ├── AiAssistant.tsx      # AIアシスタント
+│   └── CustomNode.tsx       # カスタムノード
+├── App.tsx                  # アプリケーションルート
+└── main.tsx                 # エントリーポイント
+```
 
-  h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-  }
+### 技術スタック
+- **フレームワーク**: React 18 + TypeScript
+- **ビルドツール**: Vite
+- **グラフライブラリ**: ReactFlow
+- **スタイリング**: TailwindCSS
+- **状態管理**: React Hooks
 
-  button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-  }
-  button:hover {
-    border-color: #646cff;
-  }
-  button:focus,
-  button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-  }
+### リファクタリング効果
+- **可読性向上**: 各ファイルが単一の責任を持つ
+- **保守性向上**: 機能ごとに独立して修正可能
+- **拡張性向上**: 新しい機能の追加が容易
+- **テスト容易性**: 各フックとコンポーネントを個別にテスト可能
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      color: #213547;
-      background-color: #ffffff;
-    }
-    a:hover {
-      color: #747bff;
-    }
-    button {
-      background-color: #f9f9f9;
-    }
-  }
-  ```
+## 🚀 開発環境のセットアップ
 
-## 履歴
+```bash
+# 依存関係のインストール
+npm install
 
-- 2023-10-01: プロジェクト初期化
-- 2023-10-02: TailwindCSSの設定を修正し、マインドマップの基本実装を完了
+# 開発サーバーの起動
+npm run dev
 
-## Gitリポジトリへの登録手順
+# ビルド
+npm run build
+```
 
-1. **不要なファイルの削除**  
-   - `node_modules` や `package-lock.json` などの不要なファイルを削除します。これらは `.gitignore` に追加して、Gitに登録しないようにします。
+## 🔮 今後の拡張予定
 
-2. **`.gitignore` ファイルの作成**  
-   - `.gitignore` ファイルを作成し、以下の内容を追加します：
-     ```
-     node_modules/
-     package-lock.json
-     .env
-     .DS_Store
-     ```
+- [ ] GPT APIとの連携
+- [ ] マインドマップの保存/読み込み機能
+- [ ] エクスポート機能（PNG, PDF）
+- [ ] テーマ機能
+- [ ] コラボレーション機能
+- [ ] 履歴管理機能
 
-3. **READMEの更新**  
-   - READMEに、Gitリポジトリに登録する際の手順や注意点を追加します。例えば、`node_modules` をインストールする手順や、環境変数の設定方法など。
+## 📝 ライセンス
 
-4. **コミットメッセージの準備**  
-   - 最初のコミットメッセージを準備します。例えば、「Initial commit: Project setup with React, TypeScript, and TailwindCSS」など。
-
-5. **Gitリポジトリの初期化**  
-   - プロジェクトディレクトリで以下のコマンドを実行して、Gitリポジトリを初期化します：
-     ```bash
-     git init
-     ```
-
-6. **ファイルのステージング**  
-   - 以下のコマンドを実行して、変更をステージングします：
-     ```bash
-     git add .
-     ```
-
-7. **最初のコミット**  
-   - 以下のコマンドを実行して、最初のコミットを作成します：
-     ```bash
-     git commit -m "Initial commit: Project setup with React, TypeScript, and TailwindCSS"
-     ```
-
-8. **リモートリポジトリの設定（オプション）**  
-   - もしGitHubやGitLabなどのリモートリポジトリを使用する場合は、リモートリポジトリのURLを設定します：
-     ```bash
-     git remote add origin <リモートリポジトリのURL>
-     ```
-
-9. **プッシュ（オプション）**  
-   - リモートリポジトリにプッシュする場合は、以下のコマンドを実行します：
-     ```bash
-     git push -u origin main
-     ```
-
-10. **動作確認**  
-    - 最後に、プロジェクトが正常に動作することを確認します。`npm run dev` を実行して、開発サーバーが起動することを確認してください。
+MIT License

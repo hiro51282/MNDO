@@ -18,7 +18,7 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-export function MindMap() {
+export function MindMapRefactored() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   
   const {
@@ -38,16 +38,13 @@ export function MindMap() {
     changeSelectedEdgeStyle,
     setLayoutStyle,
     setSelectedNodeColor,
+    setSelectedNodes,
   } = useMindMap();
 
   const { aiInput, setAiInput, handleAiInput } = useAiAssistant(
     nodes,
     addSubNodes,
-    (nodeIds) => {
-      // setSelectedNodesの代わりに直接選択状態を更新
-      // この部分はuseMindMapフック内で管理されるため、
-      // ここでは一時的な対応として空の関数を渡す
-    }
+    setSelectedNodes
   );
 
   useKeyboardShortcuts(addSubNodes);
