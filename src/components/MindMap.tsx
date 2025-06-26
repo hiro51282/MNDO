@@ -9,6 +9,7 @@ import { CustomNode } from './CustomNode';
 import { ControlPanel } from './ControlPanel';
 import { InfoPanel } from './InfoPanel';
 import { AiAssistant } from './AiAssistant';
+import { McpTestPanel } from './McpTestPanel';
 import { useMindMap } from '../hooks/useMindMap';
 import { useAiAssistant } from '../hooks/useAiAssistant';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
@@ -17,6 +18,10 @@ import 'reactflow/dist/style.css';
 const nodeTypes = {
   custom: CustomNode,
 };
+
+// AI機能の有効/無効を環境変数で制御
+const ENABLE_AI = import.meta.env.VITE_ENABLE_AI !== 'false';
+const ENABLE_MCP = import.meta.env.VITE_ENABLE_MCP !== 'false';
 
 export function MindMap() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -89,15 +94,23 @@ export function MindMap() {
         layoutStyle={layoutStyle}
       />
 
-      <AiAssistant
-        aiInput={aiInput}
-        onAiInputChange={setAiInput}
-        onAiInputSubmit={handleAiInput}
-        isProcessing={isProcessing}
-        currentProposal={currentProposal}
-        onAcceptProposal={handleAcceptProposal}
-        onRejectProposal={handleRejectProposal}
-      />
+      {/* AIアシスタントは条件付きでレンダリング */}
+      {ENABLE_AI && (
+        <AiAssistant
+          aiInput={aiInput}
+          onAiInputChange={setAiInput}
+          onAiInputSubmit={handleAiInput}
+          isProcessing={isProcessing}
+          currentProposal={currentProposal}
+          onAcceptProposal={handleAcceptProposal}
+          onRejectProposal={handleRejectProposal}
+        />
+      )}
+
+      {/* MCPテストパネルは条件付きでレンダリング */}
+      {ENABLE_MCP && (
+        <McpTestPanel mindMapState={{ nodes, edges }} />
+      )}
 
       <ReactFlow
         ref={reactFlowWrapper}
