@@ -54,7 +54,7 @@ export function useMindMap() {
   const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('vertical');
   const [selectedNodeColor, setSelectedNodeColor] = useState<string>('#87CEEB');
-  const { getNode } = useReactFlow();
+  const { getNode, getNodes, getEdges } = useReactFlow();
 
   const onConnect = useCallback(
     (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
@@ -200,6 +200,30 @@ export function useMindMap() {
     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
   }, [setNodes, setEdges]);
 
+  // 複数選択ノードの削除機能
+  const deleteSelectedNodes = useCallback(() => {
+    if (selectedNodes.length === 0) return;
+    
+    // 現在のノードとエッジの状態を直接取得
+    const currentNodes = nodes;
+    const currentEdges = edges;
+    
+    // ノードを削除
+    const filteredNodes = currentNodes.filter((node) => !selectedNodes.includes(node.id));
+    
+    // エッジを削除
+    const filteredEdges = currentEdges.filter((edge) => 
+      !selectedNodes.includes(edge.source) && !selectedNodes.includes(edge.target)
+    );
+    
+    // 状態を更新
+    setNodes(filteredNodes);
+    setEdges(filteredEdges);
+    
+    // 選択状態をクリア
+    setSelectedNodes([]);
+  }, [selectedNodes, nodes, edges, setNodes, setEdges, setSelectedNodes]);
+
   // 保存機能
   const saveMindMap = useCallback((name?: string) => {
     try {
@@ -326,6 +350,56 @@ export function useMindMap() {
     );
   }, [selectedNodes, setNodes]);
 
+  // 提案ノード・エッジの追加
+  const addProposalNodes = useCallback((proposalNodes: Node[], proposalEdges: Edge[]) => {
+    setNodes((nds) => [...nds, ...proposalNodes]);
+    setEdges((eds) => [...eds, ...proposalEdges]);
+  }, [setNodes, setEdges]);
+
+  // 提案の確定（点線を実線に変更）
+  const acceptProposal = useCallback((proposalId: string) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.data?.proposalId === proposalId) {
+          return {
+            ...node,
+            data: { ...node.data, isProposal: false },
+            style: { 
+              ...node.style,
+              border: '2px solid #4CAF50',
+              backgroundColor: 'white'
+            }
+          };
+        }
+        return node;
+      })
+    );
+
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.data?.proposalId === proposalId) {
+          return {
+            ...edge,
+            style: { 
+              ...edge.style,
+              stroke: '#1a192b',
+              strokeDasharray: undefined,
+              strokeWidth: 1
+            },
+            data: { ...edge.data, isProposal: false }
+          };
+        }
+        return edge;
+      })
+    );
+  }, [setNodes, setEdges]);
+
+  // 提案の破棄（提案ノード・エッジを削除）
+  const rejectProposal = useCallback((proposalId: string) => {
+    setNodes((nds) => nds.filter((node) => node.data?.proposalId !== proposalId));
+    setEdges((eds) => eds.filter((edge) => edge.data?.proposalId !== proposalId));
+  }, [setNodes, setEdges]);
+
   return {
     nodes,
     edges,
@@ -342,11 +416,15 @@ export function useMindMap() {
     changeSelectedNodeColor,
     changeSelectedEdgeStyle,
     deleteNode,
+    deleteSelectedNodes,
     saveMindMap,
     loadMindMap,
     openFileDialog,
     setLayoutStyle,
     setSelectedNodeColor,
     setSelectedNodes,
+    addProposalNodes,
+    acceptProposal,
+    rejectProposal,
   };
 } 

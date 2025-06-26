@@ -1,11 +1,11 @@
 import { ReactFlowProvider } from 'reactflow';
-import { MindMapRefactored } from './components/MindMapRefactored';
+import { MindMap } from './components/MindMap';
 
 function App() {
   return (
     <div className="w-screen h-screen">
       <ReactFlowProvider>
-        <MindMapRefactored />
+        <MindMap />
       </ReactFlowProvider>
     </div>
   );

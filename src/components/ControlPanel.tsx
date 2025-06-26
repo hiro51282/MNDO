@@ -7,6 +7,7 @@ interface ControlPanelProps {
   selectedNodeColor: string;
   onAddNode: () => void;
   onAddSubNodes: () => void;
+  onDeleteSelectedNodes: () => void;
   onLayoutStyleChange: (style: LayoutStyle) => void;
   onNodeColorChange: (color: string) => void;
   onChangeNodeColor: () => void;
@@ -22,6 +23,7 @@ export function ControlPanel({
   selectedNodeColor,
   onAddNode,
   onAddSubNodes,
+  onDeleteSelectedNodes,
   onLayoutStyleChange,
   onNodeColorChange,
   onChangeNodeColor,
@@ -218,6 +220,47 @@ export function ControlPanel({
           >
             <span style={{ fontSize: '14px' }}>🔗</span>
             サブ ({selectedNodesCount})
+          </button>
+          <button
+            onClick={onDeleteSelectedNodes}
+            disabled={selectedNodesCount === 0}
+            style={{
+              flex: 1,
+              background: selectedNodesCount > 0 
+                ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)' 
+                : 'linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              cursor: selectedNodesCount > 0 ? 'pointer' : 'not-allowed',
+              fontSize: '12px',
+              fontWeight: '600',
+              boxShadow: selectedNodesCount > 0 
+                ? '0 3px 8px rgba(255, 107, 107, 0.3)' 
+                : '0 2px 6px rgba(0,0,0,0.1)',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              opacity: selectedNodesCount > 0 ? 1 : 0.6
+            }}
+            onMouseEnter={(e) => {
+              if (selectedNodesCount > 0) {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 107, 107, 0.4)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedNodesCount > 0) {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 3px 8px rgba(255, 107, 107, 0.3)';
+              }
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>🗑️</span>
+            削除 ({selectedNodesCount})
           </button>
         </div>
       </div>

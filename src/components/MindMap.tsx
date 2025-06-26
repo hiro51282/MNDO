@@ -36,23 +36,34 @@ export function MindMap() {
     addSubNodes,
     changeSelectedNodeColor,
     changeSelectedEdgeStyle,
+    deleteSelectedNodes,
     saveMindMap,
     openFileDialog,
+    addProposalNodes,
+    acceptProposal,
+    rejectProposal,
     setLayoutStyle,
     setSelectedNodeColor,
+    setSelectedNodes,
   } = useMindMap();
 
-  const { aiInput, setAiInput, handleAiInput } = useAiAssistant(
+  const { 
+    aiInput, 
+    setAiInput, 
+    handleAiInput,
+    isProcessing,
+    currentProposal,
+    handleAcceptProposal,
+    handleRejectProposal,
+  } = useAiAssistant(
     nodes,
-    addSubNodes,
-    (nodeIds) => {
-      // setSelectedNodesの代わりに直接選択状態を更新
-      // この部分はuseMindMapフック内で管理されるため、
-      // ここでは一時的な対応として空の関数を渡す
-    }
+    edges,
+    addProposalNodes,
+    acceptProposal,
+    rejectProposal
   );
 
-  useKeyboardShortcuts(addSubNodes);
+  useKeyboardShortcuts(addSubNodes, deleteSelectedNodes);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -63,6 +74,7 @@ export function MindMap() {
         selectedNodeColor={selectedNodeColor}
         onAddNode={addNode}
         onAddSubNodes={() => addSubNodes('forward')}
+        onDeleteSelectedNodes={deleteSelectedNodes}
         onLayoutStyleChange={setLayoutStyle}
         onNodeColorChange={setSelectedNodeColor}
         onChangeNodeColor={changeSelectedNodeColor}
@@ -81,6 +93,10 @@ export function MindMap() {
         aiInput={aiInput}
         onAiInputChange={setAiInput}
         onAiInputSubmit={handleAiInput}
+        isProcessing={isProcessing}
+        currentProposal={currentProposal}
+        onAcceptProposal={handleAcceptProposal}
+        onRejectProposal={handleRejectProposal}
       />
 
       <ReactFlow

@@ -23,6 +23,7 @@ export function InfoPanel({
         <div>選択されたエッジ: {selectedEdgesCount}個</div>
         <div>TABキー: サブノード作成（下/右）</div>
         <div>Shift+TAB: サブノード作成（上/左）</div>
+        <div>Deleteキー: 選択ノード削除</div>
         <div>Ctrl+クリック: 複数選択</div>
         <div>生成スタイル: {layoutStyle === 'vertical' ? '縦方向' : '横方向'}</div>
       </div>
