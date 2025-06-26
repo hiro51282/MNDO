@@ -18,6 +18,34 @@ React + react-flow + GPTを使用したAI連携マインドマップエディタ
 - Node.js 18以上
 - npm
 
+### 環境変数の設定（重要！）
+
+⚠️ **セキュリティ警告**: APIキーなどの機密情報は絶対にGitにコミットしないでください！
+
+1. 環境変数テンプレートをコピー
+```bash
+cp .env.example .env
+```
+
+2. `.env`ファイルを編集してAPIキーを設定
+```bash
+# AI機能の設定
+VITE_ENABLE_AI=true
+VITE_ENABLE_MCP=true
+
+# OpenAI API設定（必須）
+VITE_OPENAI_API_KEY=your_actual_openai_api_key_here
+VITE_OPENAI_MODEL=gpt-4
+
+# MCP設定（必要に応じて）
+VITE_MCP_SERVER_URL=your_mcp_server_url_here
+```
+
+3. `.env`ファイルが`.gitignore`に含まれていることを確認
+```bash
+cat .gitignore | grep .env
+```
+
 ### クイックセットアップ（推奨）
 ```bash
 git clone <repository-url>
@@ -271,6 +299,63 @@ LOG_LEVEL=info
 
 MIT License
 
+## 🔒 セキュリティ
+
+### APIキーの保護
+
+⚠️ **重要**: APIキーなどの機密情報をGitにコミットしないでください！
+
+#### 安全な設定方法
+1. **環境変数ファイルの使用**
+   ```bash
+   # .envファイルを作成（.gitignoreに含まれている）
+   cp .env.example .env
+   # .envファイルを編集してAPIキーを設定
+   ```
+
+2. **Git履歴の確認**
+   ```bash
+   # 機密情報がコミットされていないか確認
+   git log --oneline --grep="api" --grep="key" --grep="secret"
+   ```
+
+3. **誤ってコミットした場合の対処**
+   ```bash
+   # 最新のコミットを取り消し
+   git reset --soft HEAD~1
+   
+   # または、機密情報を履歴から完全に削除
+   git filter-branch --force --index-filter \
+     'git rm --cached --ignore-unmatch .env' \
+     --prune-empty --tag-name-filter cat -- --all
+   ```
+
+#### 推奨されるセキュリティプラクティス
+- ✅ 環境変数ファイル（.env）を使用
+- ✅ .gitignoreで機密ファイルを除外
+- ✅ APIキーを定期的にローテーション
+- ✅ 最小権限の原則でAPIキーを設定
+- ❌ ハードコーディングしない
+- ❌ コミットメッセージに機密情報を含めない
+- ❌ 公開リポジトリに機密情報をプッシュしない
+
+### 環境変数の管理
+```bash
+# 開発環境
+.env.development
+
+# 本番環境
+.env.production
+
+# テスト環境
+.env.test
+```
+
 ## 🤝 貢献
 
 プルリクエストやイシューの報告を歓迎します！
+
+### 貢献時の注意事項
+1. 機密情報を含むファイルをコミットしない
+2. 環境変数の変更は`.env.example`のみに反映
+3. セキュリティ関連の変更は事前にレビューを依頼

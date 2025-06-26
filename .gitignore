@@ -9,7 +9,23 @@ lerna-debug.log*
 
 node_modules/
 package-lock.json
+
+# Environment variables and API keys
 .env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# API keys and secrets
+api-keys.txt
+secrets.json
+config.json
+credentials.json
+
 .DS_Store
 dist
 dist-ssr
